@@ -83,6 +83,7 @@ void removeDuplicatesSortedLL(LinkedList *ll)
     ListNode *ptr1, *ptr2, *duplicate;
     ptr1 = ll->head;
 
+    //ensure that linked list 's length >= 2)
     while(ptr1 != NULL && ptr1->next != NULL)
     {
         //is important to let ptr2 and ptr1 to start off at the same index since we are checking the 
