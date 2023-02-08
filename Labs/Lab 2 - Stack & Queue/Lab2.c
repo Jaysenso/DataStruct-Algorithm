@@ -92,7 +92,7 @@ int main()
 
 	//for question 3
 	printf("flag: %d",palindrome(word1)); //*word1="A man a plan a canal Panama";
-	printf("flag: %d",palindrome(word2));// *word2="Superman in the sky";
+	printf("flag: %d\n",palindrome(word2));// *word2="Superman in the sky";
 
 
 	//for question 4
@@ -157,38 +157,110 @@ void recursiveReverse(Queue *q){
 ////////////////////////////////////////////////////////////
 //Question 3
 
-int palindrome(char *word){
+int palindrome(char *word)
+{
+/*ALGORITHM EXPLAINATION: ------------------------------------------------------------------
+1. We traverse through the char array, ignoring all the spaces
+2. We will capitalize all the chars for easier comparison
+3. Then we will push & enqueue all the chars into 2 different data structures
+4. Pushing into a stack reverses its order while queue retains its original order
+5. With this, we can compare the first element by (pop/dequeue) the (top of the stack/the front of queue)
+6. If the comparison fails, we know that is not palindrome
 
-	// write your code here
-	int flag = 0;
-	int length = 0;
-	int i = 0;
-	//check the length of the string
-	while (word[i] != '\0')
+NOTE: We only have to check (strlength/2) to know whether its palindrome
+--------------------------------------------------------------------------------------------
+*/
+	Stack s;
+	s.ll.head = NULL;
+	s.ll.size = 0;	
+	
+	Queue q;
+	q.ll.head = NULL;
+	q.ll.size = 0;
+
+	char * read = word;
+	char character;
+	int half;
+
+
+	while(*read != '\0')
 	{
-		length++;
-		i++;
+		if (*read != ' ')
+		{
+			character = *read;
+
+			if (character>= 65 && character<=90)
+				character+=32;
+
+			push(&s, character);
+			enqueue(&q, character);
+		}
+		read++;
 	}
-	//printf("length is :%d",length);
 
-	for (i = 0; i < length; i++)
+
+	half = q.ll.size / 2;
+
+	while (half > 0)
 	{
-		if (word[i] != word[length-i-1])
+		if (pop(&s) != dequeue(&q))
 			return -1;
+
+		half--;
 	}
 
 	return 0;
+
 }
 
 
 
 ////////////////////////////////////////////////////////////
 //Question 4
-
+/*AlGORITHM EXPLANATION******************************************************************************************
+1. We traverse through the char array
+2. We look for any opening brackets 
+3. If theres a opening bracket, we push it into our auxilary stack 
+3a.As we traversing through the char array, the auxilary stack will be used to compare against the char aray
+4. If the next char is not a opening bracket, we will check if its the closing one (assuming that the input only
+	accept brackets)
+5. if its not the corresponding closing bracket, we will terminate and return "unbalanced"
+*****************************************************************************************************************/
 int balanced(char *expression){
-
 	// write your code here
-	return 1;
+	Stack s;
+	s.ll.head = NULL;
+	s.ll.size = 0;
+
+	char c;
+	char *read = expression;
+
+	while (*read != '\0')
+	{
+		if (*read == '[' || *read == '{' || *read == '(')
+			push(&s, *read);
+		
+		else
+		{
+			//if empty stack, means the string started with a closing bracket
+			if (isEmptyStack(&s))
+				return 0;
+		
+			//c will store the opening brackets stored in the auxilary stack
+			c = pop(&s);
+
+			if (*read == ']' && c != '[')
+				return 1;
+			else if (*read == ')' && c != '(')
+				return 1;
+			else if (*read == '}' && c != '{')
+				return 1;
+
+		}
+		read++;
+	}
+
+	return 0;
 
 }
 
