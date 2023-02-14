@@ -165,28 +165,32 @@ void printSmallerValues(BTNode *node, int m){
 }
 /*
 ALGORITHM EXPLANATION
-1. declare smallest = INT_MAX(biggest integer that c can handle)
-2. call "smallestValue" recursively to traverse downwards
-3. once we reach the last node, we will compare smallest with the node->item
-4. if its smaller than smallest, we will assign smallest = node->item
-5. This will be done recursively till the root node
-6. The final smallest value will my smallest numbber of the entire tree*/
+1. traverse to the bottom of the tree
+2. if (node == NULL) -> we will return a very large int number (100000)
+3. if (node != NULL)    */
 
 int smallestValue(BTNode *node) {
 	int l, r;
 
 	// write your code here
+    //if node == NULL, we will return a very large number to be compared to the available node
     if (node == NULL)
         return 100000;
 
+
     l = smallestValue(node->left);
     r = smallestValue(node->right);
+    /* if left / right node doesnt exist, it will return 100000, then the node on the opposite will be compared
+    to this 100000 value and return itself */
+
+    // check if we have a right node 
     if (l < node->item && l < r)
         return l;
-        
+    // check if we have a left node
     else if ( r < node->item && r < l) 
         return r;
     
+    // check if we have reached the root node
     else
         return node->item;
 
