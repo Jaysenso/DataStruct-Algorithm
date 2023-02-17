@@ -135,10 +135,35 @@ void mirrorTree(BTNode *node){
         }
 
 }
+/*
+ALGORITHM EXPLANATION:
+	1. we break the tree into levels where null node is height = -1 and the one before null is height == 0
+	2. we will traverse upwards and check if height == 3
+	2.1 If height == 3, we know that theres atleast 3 nodes right below this node -->grandparent node
+	3. We will then print the value of this node!
+*/
 
 int hasGreatGrandchild(BTNode *node){
 
-	// write your code here
+
+	//Null node marks the height == -1, by returning back up by 1, we will reach the max depth of the tree 
+	//where height == 0 
+	if (node == NULL)
+		return -1;
+
+	int l, r, height;
+
+	l = hasGreatGrandchild(node->left);
+	r = hasGreatGrandchild(node->right);
+
+	//To take into account that left and right node might be of different height
+	//we will compare left and right to see which is the deeper.
+	height = l >= r ? l : r;
+
+	if (height > 1)
+		printf("%d",node->item);
+	
+	return (height + 1);
 
 }
 /*
