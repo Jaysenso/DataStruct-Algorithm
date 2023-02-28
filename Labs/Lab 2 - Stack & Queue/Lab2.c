@@ -260,7 +260,7 @@ int balanced(char *expression){
 		read++;
 	}
 
-	return 0;
+	return (!isEmptyStack(&s)) ;
 
 }
 
