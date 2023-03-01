@@ -137,7 +137,7 @@ int hasGreatGrandchild(BTNode *node){
 
 	height = l >= r ? l : r;
 
-	if(height > 1)
+	if(height > 2)
 	{
 		printf("%d ",node->item);
 	}
