@@ -120,15 +120,17 @@ int main()
 
 void removeUntil(Stack *s, int value)
 {
-
-	// write your code here
-	int i;
-	if (s == NULL)
+	if (s == NULL || pop(s) == value)
 		return;
 
-	for (i = 0; i < value - 1; i++)
+	int popped_var;
+
+	while(!isEmptyStack(s))
 	{
-		pop(s);
+		popped_var = pop(s);
+
+		if(popped_var == value)
+			break;
 	}
 }
 
@@ -260,7 +262,7 @@ int balanced(char *expression){
 		read++;
 	}
 
-	return 0;
+	return (!isEmptyStack(&s)) ;
 
 }
 
