@@ -68,29 +68,29 @@ int main()
     }
 
     calDegreeV(g,degreeV);
-
+    
+    for(i = 0; i < g.V; i++)
+    {
+        for(j = 0; j < g.V; j++)
+        {
+            printf("%d ",g.adj.matrix[i][j]);
+        }
+    }
     printGraphMatrix(g);
     printDegreeV(degreeV,g.V);
 
-    //gtype check
-
-    /*if(g.type == ADJ_LIST)
-        printf("g is ADJ_LIST");
-    else if (g.type == ADJ_MATRIX)
-        printf("g is ADJ_MATRIX");*/
-
-    
     adjM2adjL(&g);
-
     calDegreeV(g,degreeV);
 
     printGraphList(g);
-    // printDegreeV(degreeV,g.V);
+    printDegreeV(degreeV,g.V);
 
-    // adjL2adjM(&g);
-    // printGraphMatrix(g);
+    adjL2adjM(&g);
+    printGraphMatrix(g);
 
+    system("pause");
     return 0;
+
 }
 
 void printGraphMatrix(Graph g)
@@ -133,7 +133,7 @@ void printGraphList(Graph g){
 
 void adjM2adjL(Graph *g)
 {
-    if (g->type == ADJ_LIST)
+    if (g->type == ADJ_LIST || g == NULL)
     {
         printf("Error");
         return;
@@ -152,7 +152,7 @@ void adjM2adjL(Graph *g)
         adjList[i] = NULL;
     }
 
-
+    
     for(i = 0; i < vertices; i++)
     {
         for(j = 0; j < vertices; j++)
@@ -172,12 +172,10 @@ void adjM2adjL(Graph *g)
                     //Store a tail so both the head and tail are the same.
                     tail = newNode;
                 }
-       
 
                 //else we will use curr to traverse to the last Node and add the NewNode to the back
                 else
                     {
-                        
                         tail->next = newNode;
                         tail = newNode;
                     }
@@ -185,6 +183,7 @@ void adjM2adjL(Graph *g)
         }
     }
 
+    //free the space allocated for adj.matrix
     for (i = 0; i < g->V; i++)
     {
         free(g->adj.matrix[i]);
@@ -192,20 +191,121 @@ void adjM2adjL(Graph *g)
     free(g->adj.matrix);
 
 
+    //update the union space with our temp adjList and the graph type.
     g->adj.list = adjList;
     g->type = ADJ_LIST;
         
 }
 
-void adjL2adjM(Graph *g){
-	// Question 2
-    // Write your code here
+void adjL2adjM(Graph *g)
+{
+    if(g->type == ADJ_MATRIX || g == NULL)
+    {
+        printf("Error");
+        return;
+    }
 
+    int **adjMatrix;
+    int i, j;
+    int vertices = g->V;
+    ListNode *curr;    
+
+    //malloc a temporary 2D matrix 
+    adjMatrix = (int **)malloc(vertices * sizeof(int));
+    for(i = 0; i < vertices; i++)
+    {
+        adjMatrix[i] = (int *)malloc(vertices * sizeof(int *));
+    }
+
+    //initialized all elements to 0.
+    for(i = 0; i < vertices; i++)
+    {
+        for(j = 0; j < vertices; j++)
+        {
+            adjMatrix[i][j] = 0;
+        }
+    }
+    //traverse the list and update the adjMatrix
+    for(i = 0; i < vertices; i++)
+    {
+        //check if its null , else continue
+        if(g->adj.list[i] == NULL)
+            continue;
+        
+        //traverse the list and update corresponding entries in adjMatrix
+        curr = g->adj.list[i];
+
+        while(curr != NULL)
+        {
+            adjMatrix[i][curr->vertex-1] = 1;
+            curr = curr->next;
+        }
+    }
+
+    //free the union space to make way for adjMatrix
+    for(i = 0; i < vertices; i++)
+    {
+        free(g->adj.list[i]);
+    }
+    free(g->adj.list);
+
+    //update the graph adj pointer and type
+    g->adj.matrix = adjMatrix;
+    g->type = ADJ_MATRIX;
 }
 
 void calDegreeV(Graph g, int *degreeV)
-{
-	// Question 3
-    // Write your code here
+{   
+    
+    ListNode *curr;
+    int i ,j;
+    int vertices = g.V;
+
+    if (degreeV == NULL)
+        return;
+
+    //iniialize degreeV
+    for(i = 0; i < vertices; i++)
+    {
+        degreeV[i] = 0;
+    }
+
+    //perform traversal corresponds to the different data structures (list/matrix)
+        //if graph g is adj_List
+    if(g.type == ADJ_LIST)
+    {
+        for(i = 0; i < vertices; i++)
+        {
+            if(g.adj.list[i] == NULL)
+                continue;
+            
+            curr = g.adj.list[i];
+
+            while(curr != NULL)
+            {
+                degreeV[i]++;
+                curr = curr->next;
+            }
+
+        }
+    }
+    
+    //if graph g is adj_matrix
+    else if(g.type == ADJ_MATRIX)
+    {
+        for(i = 0; i < vertices; i++)
+        {   
+            for(j = 0; j < vertices; j++)
+            {
+                
+                if(g.adj.matrix[i][j] = 1)
+                {
+                    degreeV[i]++;
+                }
+            }
+        }
+    }
+
+
 }
 
